@@ -1,6 +1,8 @@
 import datetime
+import requests
+from bs4 import BeautifulSoup as BS
 
-class Solution(object):
+class Fuck_shudu(object):
 	def __init__(self,board):
 		self.b = board   #数独，方便后面调用
 		self.t = 0      #尝试的次数
@@ -57,5 +59,28 @@ class Solution(object):
 		end = datetime.datetime.now()
 		print('cost time:{}'.format(end-begin)) #花费的时间（一般不会超过1s）和总次数
 		print('try sum times:{}'.format(self.t))
+
+
+class Crawl_shudu(object):
+	def __init__(self,url):
+		self.url = url
+
+	def start(self):
+		response = requests.get(self.url).text
+		soup = BS(response,'lxml')
+		sdbody = soup.find('table',class_='ptb')
+
+		shudu = []
+		for tr in sdbody.find_all('tr'):
+			trnum = []
+			for td in tr.find_all('td'):
+				num = td.find('input')['value']
+				if num == '':
+					trnum.append(0)
+				else:
+					trnum.append(int(num))
+			shudu.append(trnum)
+		return shudu
+	
 
 
